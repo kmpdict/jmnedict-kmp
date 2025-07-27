@@ -1,4 +1,4 @@
-package com.boswelja.jmdict.generator
+package com.boswelja.jmnedict.generator
 
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
@@ -11,7 +11,7 @@ import org.gradle.api.tasks.TaskAction
 abstract class CopyJvmResourcesTask : DefaultTask() {
 
     @get:InputFile
-    abstract val jmDictFile: RegularFileProperty
+    abstract val jmneDictFile: RegularFileProperty
 
     /**
      * The directory to store generated source files in.
@@ -22,7 +22,7 @@ abstract class CopyJvmResourcesTask : DefaultTask() {
     @TaskAction
     fun copyJmDictToResources() {
         project.copy(Action { t ->
-            t.from(jmDictFile)
+            t.from(jmneDictFile)
             t.into(outputDirectory)
         })
     }

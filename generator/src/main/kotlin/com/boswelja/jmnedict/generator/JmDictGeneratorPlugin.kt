@@ -1,4 +1,4 @@
-package com.boswelja.jmdict.generator
+package com.boswelja.jmnedict.generator
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,14 +11,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 import kotlin.reflect.KProperty0
 
-internal const val ExtensionName: String = "jmDict"
+internal const val ExtensionName: String = "jmneDict"
 
-interface JmDictExtension {
+interface JmneDictExtension {
 
     /**
-     * The URL for the full JMDict archive. Defaults to `ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz`.
+     * The URL for the full JMneDict archive. Defaults to `ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz`.
      */
-    val jmDictUrl: Property<URI>
+    val jmneDictUrl: Property<URI>
 
     /**
      * The package name for the generated sources.
@@ -33,32 +33,32 @@ interface JmDictExtension {
     val generateMetadata: Property<Boolean>
 }
 
-class JmDictGeneratorPlugin : Plugin<Project> {
+class JmneDictGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         // Create the Gradle extension for configuration
         val config = target.extensions.create(
             ExtensionName,
-            JmDictExtension::class.java
+            JmneDictExtension::class.java
         )
         config.generateMetadata.convention(true)
-        config.jmDictUrl.convention(URI("ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz"))
+        config.jmneDictUrl.convention(URI("ftp://ftp.edrdg.org/pub/Nihongo/JMnedict.xml.gz"))
 
-        val targetGeneratedSourcesDir = target.layout.buildDirectory.dir("generated/jmdict/kotlin")
-        val targetJmDictResDir = target.layout.buildDirectory.dir("generated/jmdict/composeResources/")
-        val jmDictFile = target.layout.buildDirectory.file("resources/jmdict/jmdict.xml")
-        val relNotesFile = target.layout.buildDirectory.file("resources/jmdict/changelog.xml")
-        val dtdFile = target.layout.buildDirectory.file("resources/jmdict/dtd.xml")
-        val metadataFile = target.layout.buildDirectory.file("resources/jmdict/metadata.properties")
+        val targetGeneratedSourcesDir = target.layout.buildDirectory.dir("generated/jmnedict/kotlin")
+        val targetJmneDictResDir = target.layout.buildDirectory.dir("generated/jmnedict/composeResources/")
+        val jmneDictFile = target.layout.buildDirectory.file("resources/jmnedict/jmnedict.xml")
+        val relNotesFile = target.layout.buildDirectory.file("resources/jmnedict/changelog.xml")
+        val dtdFile = target.layout.buildDirectory.file("resources/jmnedict/dtd.xml")
+        val metadataFile = target.layout.buildDirectory.file("resources/jmnedict/metadata.properties")
 
         // Register the download task
-        val downloadJmDictTask = target.tasks.register(
-            "downloadJmDict",
-            DownloadJmDictTask::class.java
+        val downloadJmneDictTask = target.tasks.register(
+            "downloadJmneDict",
+            DownloadJmneDictTask::class.java
         ) {
-            requireProperty(config::jmDictUrl, "ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz")
+            requireProperty(config::jmneDictUrl, "ftp://ftp.edrdg.org/pub/Nihongo/JMnedict.xml.gz")
 
-            it.jmDictUrl.set(config.jmDictUrl)
-            it.outputJmDict.set(jmDictFile)
+            it.jmneDictUrl.set(config.jmneDictUrl)
+            it.outputJmneDict.set(jmneDictFile)
             it.outputDtd.set(dtdFile)
             it.outputReleaseNotes.set(relNotesFile)
             it.outputMetadata.set(metadataFile)
@@ -66,39 +66,39 @@ class JmDictGeneratorPlugin : Plugin<Project> {
 
         // Register the generation tasks
         val generateDataClassTask = target.tasks.register(
-            "generateJmDictDataClasses",
+            "generateJmneDictDataClasses",
             GenerateDataClassesTask::class.java
         ) {
             requireProperty(config::packageName, "\"com.my.package\"")
 
-            it.dependsOn(downloadJmDictTask)
+            it.dependsOn(downloadJmneDictTask)
 
             it.outputDirectory.set(targetGeneratedSourcesDir)
             it.packageName.set(config.packageName)
-            it.dtdFile.set(downloadJmDictTask.get().outputDtd)
+            it.dtdFile.set(downloadJmneDictTask.get().outputDtd)
         }
         val generateMetadataTask = target.tasks.register(
-            "generateJmDictMetadataObject",
+            "generateJmneDictMetadataObject",
             GenerateMetadataObjectTask::class.java
         ) {
             requireProperty(config::packageName, "\"com.my.package\"")
 
-            it.dependsOn(downloadJmDictTask)
+            it.dependsOn(downloadJmneDictTask)
 
             it.outputDirectory.set(targetGeneratedSourcesDir)
             it.packageName.set(config.packageName)
-            it.metadataFile.set(downloadJmDictTask.get().outputMetadata)
+            it.metadataFile.set(downloadJmneDictTask.get().outputMetadata)
         }
 
         // Configure Compose resources
         target.extensions.findByType(ComposeExtension::class.java)?.extensions?.findByType(ResourcesExtension::class.java)?.apply {
             val copyResourcesTask = target.tasks.register(
-                "copyJmDictResource",
+                "copyJmneDictResource",
                 CopyComposeResourcesTask::class.java
             ) {
-                it.dependsOn(downloadJmDictTask)
-                it.jmDictFile.set(jmDictFile)
-                it.outputDirectory.set(targetJmDictResDir)
+                it.dependsOn(downloadJmneDictTask)
+                it.jmneDictFile.set(jmneDictFile)
+                it.outputDirectory.set(targetJmneDictResDir)
             }
             customDirectory(
                 sourceSetName = "commonMain",

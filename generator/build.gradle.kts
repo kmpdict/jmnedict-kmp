@@ -6,9 +6,9 @@ plugins {
 
 gradlePlugin {
     plugins {
-        create("com.boswelja.jmdict") {
-            id = "com.boswelja.jmdict.generator"
-            implementationClass = "com.boswelja.jmdict.generator.JmDictGeneratorPlugin"
+        create("com.boswelja.jmnedict") {
+            id = "com.boswelja.jmnedict.generator"
+            implementationClass = "com.boswelja.jmnedict.generator.JmneDictGeneratorPlugin"
         }
     }
 }
@@ -23,6 +23,8 @@ dependencies {
 
     implementation(libs.boswelja.xmldtd)
     implementation(libs.kotlinx.io.core)
+    implementation(libs.okio.core)
+    implementation(libs.okio.zstd)
 
     testImplementation(libs.kotlin.test)
 }

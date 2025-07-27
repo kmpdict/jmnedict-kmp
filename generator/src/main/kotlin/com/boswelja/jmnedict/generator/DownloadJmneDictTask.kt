@@ -1,4 +1,4 @@
-package com.boswelja.jmdict.generator
+package com.boswelja.jmnedict.generator
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
@@ -17,19 +17,19 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-abstract class DownloadJmDictTask : DefaultTask() {
+abstract class DownloadJmneDictTask : DefaultTask() {
 
     /**
-     * The URL for the full JMDict archive.
+     * The URL for the full JMNEDict archive.
      */
     @get:Input
-    abstract val jmDictUrl: Property<URI>
+    abstract val jmneDictUrl: Property<URI>
 
     /**
-     * The file to store the output jmdict.
+     * The file to store the output jmnedict.
      */
     @get:OutputFile
-    abstract val outputJmDict: RegularFileProperty
+    abstract val outputJmneDict: RegularFileProperty
 
     @get:OutputFile
     abstract val outputDtd: RegularFileProperty
@@ -43,20 +43,20 @@ abstract class DownloadJmDictTask : DefaultTask() {
     @OptIn(ExperimentalTime::class)
     @TaskAction
     fun downloadAndUnpackJmDict() {
-        val outputJmDictFile = outputJmDict.get().asFile
+        val outputJmneDictFile = outputJmneDict.get().asFile
         // If the jmdict file exists and is not older than 24 hours, return
-        if (outputJmDictFile.exists()) {
-            val lastModifiedInstant = Instant.fromEpochMilliseconds(outputJmDictFile.lastModified())
+        if (outputJmneDictFile.exists()) {
+            val lastModifiedInstant = Instant.fromEpochMilliseconds(outputJmneDictFile.lastModified())
             if (Clock.System.now() - lastModifiedInstant < 23.hours) {
                 return
             }
         }
 
-        val jmDictStream = GZIPOutputStream(outputJmDict.get().asFile.outputStream()).writer()
+        val jmneDictStream = GZIPOutputStream(outputJmneDict.get().asFile.outputStream()).writer()
         val releaseNotesOutputStream = outputReleaseNotes.get().asFile.outputStream().writer()
         val dtdOutputStream = outputDtd.get().asFile.outputStream().writer()
 
-        val urlConnection = jmDictUrl.get().toURL().openConnection()
+        val urlConnection = jmneDictUrl.get().toURL().openConnection()
         val inStream = GZIPInputStream(urlConnection.inputStream).bufferedReader()
 
         // Metadata fields
@@ -82,7 +82,7 @@ abstract class DownloadJmDictTask : DefaultTask() {
                     }
                 } else {
                     if (line.startsWith("<entry>")) entryCount++
-                    jmDictStream.appendLine(line)
+                    jmneDictStream.appendLine(line)
                 }
                 line = inStream.readLine()
             }
@@ -95,7 +95,7 @@ abstract class DownloadJmDictTask : DefaultTask() {
                 props.store(it, null)
             }
         } finally {
-            jmDictStream.close()
+            jmneDictStream.close()
             releaseNotesOutputStream.close()
             dtdOutputStream.close()
             inStream.close()
