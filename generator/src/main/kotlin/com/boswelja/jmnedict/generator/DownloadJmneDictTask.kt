@@ -1,5 +1,8 @@
 package com.boswelja.jmnedict.generator
 
+import com.squareup.zstd.okio.zstdCompress
+import okio.buffer
+import okio.sink
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -52,7 +55,7 @@ abstract class DownloadJmneDictTask : DefaultTask() {
             }
         }
 
-        val jmneDictStream = GZIPOutputStream(outputJmneDict.get().asFile.outputStream()).writer()
+        val jmneDictStream = outputJmneDict.get().asFile.sink().zstdCompress().buffer()
         val releaseNotesOutputStream = outputReleaseNotes.get().asFile.outputStream().writer()
         val dtdOutputStream = outputDtd.get().asFile.outputStream().writer()
 
@@ -82,7 +85,8 @@ abstract class DownloadJmneDictTask : DefaultTask() {
                     }
                 } else {
                     if (line.startsWith("<entry>")) entryCount++
-                    jmneDictStream.appendLine(line)
+                    jmneDictStream.writeUtf8(line)
+                    jmneDictStream.writeUtf8("\n")
                 }
                 line = inStream.readLine()
             }
