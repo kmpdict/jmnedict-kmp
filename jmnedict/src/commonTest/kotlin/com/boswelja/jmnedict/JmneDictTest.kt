@@ -1,6 +1,5 @@
-package com.boswelja.jmdict
+package com.boswelja.jmnedict
 
-import com.boswelja.jmnedict.Metadata
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

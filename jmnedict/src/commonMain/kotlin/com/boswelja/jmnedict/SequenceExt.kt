@@ -1,4 +1,4 @@
-package com.boswelja.jmdict
+package com.boswelja.jmnedict
 
 internal fun <T> Sequence<T>.chunkedUntil(predicate: (T) -> Boolean): Sequence<List<T>> {
     return sequence {

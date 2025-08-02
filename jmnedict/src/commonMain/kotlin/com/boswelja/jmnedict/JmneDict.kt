@@ -1,7 +1,5 @@
-package com.boswelja.jmdict
+package com.boswelja.jmnedict
 
-import com.boswelja.jmnedict.Entry
-import com.boswelja.jmnedict.JMnedict
 import com.squareup.zstd.okio.zstdDecompress
 import io.github.boswelja.jmdict.jmnedict.generated.resources.Res
 import kotlinx.coroutines.Dispatchers

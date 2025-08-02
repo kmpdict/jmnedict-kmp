@@ -1,6 +1,6 @@
-package com.boswelja.jmdict
+package com.boswelja.jmnedict
 
-import io.github.boswelja.jmdict.jmdict.generated.resources.Res
+import io.github.boswelja.jmdict.jmnedict.generated.resources.Res
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.Setup
@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.zip.GZIPInputStream
 
 @State(Scope.Benchmark)
-open class JmDictBenchmark {
+open class JmneDictBenchmark {
     private lateinit var jmDictSequence: Sequence<String>
 
     @Setup

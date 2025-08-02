@@ -1,4 +1,4 @@
-package com.boswelja.jmdict
+package com.boswelja.jmnedict
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
