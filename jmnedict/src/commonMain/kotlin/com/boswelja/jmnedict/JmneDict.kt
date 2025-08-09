@@ -1,7 +1,7 @@
 package com.boswelja.jmnedict
 
 import com.squareup.zstd.okio.zstdDecompress
-import io.github.boswelja.jmdict.jmnedict.generated.resources.Res
+import io.github.boswelja.jmnedict.jmnedict.generated.resources.Res
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -16,7 +16,7 @@ import kotlin.collections.emptyList
 @OptIn(ExperimentalXmlUtilApi::class)
 internal val Serializer = XML {
     defaultPolicy {
-        pedantic = true
+        pedantic = false
         autoPolymorphic = true
         throwOnRepeatedElement = true
         isStrictBoolean = true
