@@ -1,3 +1,5 @@
+# ⚠️ This repository is archived. Development has moved to https://github.com/kmpdict/edrdg-kmp
+
 # JMnedict-KMP
 
 Kotlin Multiplatform, pre-packaged Japanese-Multilingual name dictionary!
